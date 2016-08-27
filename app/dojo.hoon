@@ -1000,7 +1000,10 @@
         :-  num
         ?-    -.source.com
             $data        [%ex %sand %t data.source.com]
-            $dojo        (rash command.source.com dp-build:dp)
+            $dojo
+          %+  rash  command.source.com 
+          (ifix [(punt gap) (punt gap)] dp-build:dp)
+        ::
             $clay
           :-  %ex
           :*  %wish
@@ -1098,10 +1101,8 @@
   he-abet:(he-arm +<)
 ::
 ++  peer-sole
-  ~?  !=(src.hid our.hid)  [%dojo-peer-stranger ost.hid src.hid]
-  ?>  ?|  =(src.hid our.hid) 
-          &(=(%earl (clan src.hid)) =(our.hid (sein src.hid)))
-      ==
+  ~?  !=(our.hid src.hid)  [%dojo-peer-stranger ost.hid src.hid]
+  ?>  (team our.hid src.hid)
   =^  moz  .
     ?.  (~(has by hoc) ost.hid)  [~ .]
     ~&  [%dojo-peer-replaced ost.hid]

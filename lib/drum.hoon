@@ -9,18 +9,13 @@
 ::::                                                    ::  ::
   ::                                                    ::  ::
 |%                                                      ::  ::
-++  drum-part  {$drum $1 drum-pith}                     ::
-++  drum-part-any                                       ::
-  $:  $drum                                             ::
-      $%  {$1 drum-pith}                                ::
-          {$0 drum-pith-0}                              ::
-  ==  ==                                                ::
-++  drum-pith-0                                         ::  old drum-pith
-  %+  cork  drum-pith  |=  drum-pith                    ::
-  +<(bin *(map bone source-0))                          ::
-++  drum-pith                                           ::
-  $:  eel/(set gill)                                    ::  connect to
-      ray/(set well)                                    ::
+++  drum-part  {$drum $1 drum-pith-1}                   ::
+++  drum-part-old  {$drum $0 drum-pith-0}               ::
+++  drum-pith-0  _!!                                    ::  forgotten
+++  drum-pith-1                                         ::
+  $:  sys/(unit bone)                                   ::  local console
+      eel/(set gill)                                    ::  connect to 
+      ray/(set well)                                    ::  
       fur/(map dude (unit server))                      ::  servers
       bin/(map bone source)                             ::  terminals
   ==                                                    ::
@@ -32,18 +27,11 @@
   $:  syd/desk                                          ::  app identity
       cas/case                                          ::  boot case
   ==                                                    ::
-++  kill-0  (unit (list @c))                            ::  old kill buffer
 ++  kill                                                ::  kill ring
   $:  pos/@ud                                           ::  ring position
       num/@ud                                           ::  number of entries
       max/_60                                           ::  max entries
       old/(list (list @c))                              ::  entries proper
-  ==                                                    ::
-++  source-0                                            ::  old source without
-  %+  cork  source  |=  source                          ::  kill ring or
-  %=  +<                                                ::  blt.target
-    kil  *kill-0                                        ::
-    fug  *(map gill (unit target-0))                    ::
   ==                                                    ::
 ++  source                                              ::  input device
   $:  edg/_80                                           ::  terminal columns
@@ -67,8 +55,6 @@
   $:  pos/@ud                                           ::  search position
       str/(list @c)                                     ::  search string
   ==                                                    ::
-++  target-0                                            ::  target without blt
-  (cork target |=(target |1.+<))                        ::
 ++  target                                              ::  application target
   $:  blt/(pair (unit dill-belt) (unit dill-belt))      ::  curr & prev belts
       ris/(unit search)                                 ::  reverse-i-search
@@ -133,25 +119,17 @@
   ^-  drum-part
   :*  %drum
       %1
+      ~                                                 ::  sys
       (deft-fish our)                                   ::  eel
       (deft-apes our)                                   ::  ray
       ~                                                 ::  fur
       ~                                                 ::  bin
   ==                                                    ::
-::
 ++  drum-port
-  |=  old/drum-part-any
-  ^-  drum-part
-  ?:  ?=($1 &2.old)  old
-  ~&  [%drum-porting &2.old]
-  =;  bin  [%drum %1 |2.old(bin bin)]
-  %-  ~(run by bin.old)
-  |=  source-0
-  %=  +<
-    kil  (kill ?~(kil ~ [1 1 60 [u.kil]~]))
-    fug  %-  ~(run by fug)
-         |=  t/(unit target-0)
-         ?~(t ~ [~ [[~ ~] u.t]])
+  |=  old/?(drum-part drum-part-old)  ^-  drum-part
+  ?-  &2.old
+    $1  old
+    $0  !!  :: XX unreachable, see issue #242
   ==
 ::
 ++  drum-path                                           ::  encode path
@@ -196,11 +174,8 @@
 ++  peer                                              ::
   |=   pax/path  =<  se-abet
   ^+  +>
-  ?.  ?|  =(our src)                                  ::  ourself
-          &(=(%duke (clan our)) =(our (sein src)))    ::  or our own yacht
-      ==                                              ::
-    ~|  [%drum-unauthorized our+our src+src]          ::  very simplistic
-    !!
+  ~|  [%drum-unauthorized our+our src+src]            ::  ourself
+  ?>  (team our src)                                  ::  or our own moon
   se-view:(se-text "[{<src>}, driving {<our>}]")
 ::
 ++  poke-dill-belt                                    ::
@@ -223,9 +198,13 @@
   =<  se-abet  =<  se-view
   (se-klin gyl)
 ::
-:: ++  poke-exit                                         ::
-::   |=(~ se-abet:(se-blit `dill-blit`[%qit ~]))  ::  XX find bone
-:: ::
+++  poke-exit                                         ::
+  |=($~ se-abet:(se-blit-sys `dill-blit`[%qit ~]))    ::
+::
+++  poke-put                                          ::
+  |=  {pax/path txt/@}
+  se-abet:(se-blit-sys [%sav pax txt])                ::
+::
 ++  reap-phat                                         ::
   |=  {way/wire saw/(unit tang)}
   =<  se-abet  =<  se-view
@@ -270,6 +249,7 @@
   ?.  se-ably
     =.  .  se-adit
     [(flop moz) +>+>+<+]
+  =.  sys  ?^(sys sys `ost)
   =.  .  se-subze:se-adze:se-adit
   :_  %_(+>+>+<+ bin (~(put by bin) ost `source`+>+<))
   ^-  (list move)
@@ -486,6 +466,11 @@
   |=  bil/dill-blit
   +>(biz [bil biz])
 ::
+++  se-blit-sys                                       ::  output to system console
+  |=  bil/dill-blit  ^+  +>
+  ?~  sys  ~&(%se-blit-no-sys +>)
+  (se-emit [u.sys %diff %dill-blit bil])
+::
 ++  se-show                                           ::  show buffer, raw
   |=  lin/(pair @ud (list @c))
   ^+  +>
@@ -513,7 +498,12 @@
   |=  mov/move
   %_(+> moz [mov moz])
 ::
-++  se-talk
+++  se-emil                                           ::  emit moves
+  |=  mov/(list move)
+  ?~  mov  +>
+  $(mov t.mov, +> (se-emit i.mov))
+::
+++  se-talk  
   |=  tac/(list tank)
   ^+  +>
   :: XX talk should be usable for stack traces, see urbit#584 which this change

@@ -80,7 +80,7 @@
 --                                                      ::
 |%                                                      ::  models
 ++  bolo                                                ::  eyre state
-  $:  $5                                                ::  version
+  $:  $6                                                ::  version
       gub/@t                                            ::  random identity
       hov/(unit ship)                                   ::  master for remote
       top/beam                                          ::  ford serve prefix
@@ -99,8 +99,9 @@
       sec/(map {iden (list @t)} driv)                   ::  security drivers
   ==                                                    ::
 ::
-++  driv  %+  pair  (unit $@($~ vase))                  ::  driver state
-          (qeu (trel duct mark vase:hiss))              ::  waiting requests
+++  driv                                                ::  driver state
+  %+  pair  (unit $@($~ vase))                          ::  main core
+  {liv/? req/(qeu (trel duct mark vase:hiss))}          ::  waiting requests
 ::
 ++  live                                                ::  in flight
   $%  {$exec p/whir}                                    ::  ford build
@@ -205,7 +206,7 @@
   |=  {wid/@u tan/tang}
   ^-  tape
   =+  rolt=|=(a/wall `tape`?~(a ~ :(weld i.a "\0a" $(a t.a))))
-  (rolt (turn tan |=(a/tank (rolt (wash 0^wid a)))))
+  (rolt (zing (turn tan |=(a/tank (wash 0^wid a)))))
 ::
 ::
 ++  add-cookies
@@ -552,8 +553,8 @@
         ;title:"{(trip a)}"
         ;script(type "text/javascript", src "//cdnjs.cloudflare.com/ajax/".
           "libs/jquery/2.1.1/jquery.min.js");
-        ;link(rel "stylesheet", href "/lib/css/fonts.css");
-        ;link(rel "stylesheet", href "/lib/css/bootstrap.css");
+        ;link(rel "stylesheet", href "/=home=/web/lib/css/fonts.css");
+        ;link(rel "stylesheet", href "/=home=/web/lib/css/bootstrap.css");
       ==
       ;body:"*{b}"
     ==
@@ -1103,7 +1104,13 @@
           %^  resp  200  image+/png
           favi
         ::
-          ::  {$txt $robots $~}  !!
+            {$txt $robots $~}
+          :-  ~
+          %^  resp  200  text+/plain
+          %-  role
+          :~  'User-agent: *'
+              'Disallow: '
+          ==
         ==
       ::
       ++  is-spur  |(?~(q.pok & ((sane %ta) i.q.pok)))
@@ -1696,13 +1703,13 @@
     ~%  %eyre-v  ..is  ~
     |_  $:  {usr/iden dom/path}
             cor/(unit $@($~ vase))
-            req/(qeu {p/duct q/mark r/vase:hiss})
+            {liv/? req/(qeu {p/duct q/mark r/vase:hiss})}
         ==
     ++  self  .
     ++  abet  +>(sec (~(put by sec) +<- +<+))
     ++  execute  |=({a/whir-se b/{beak silk}} (execute:abet se+[a usr dom] b))
     ++  dead-this  |=(a/tang (fail:abet 500 0v0 a))
-    ++  dead-hiss  |=(a/tang (give-sigh:abet(req ~(nap to req)) %| a))
+    ++  dead-hiss  |=(a/tang pump(req ~(nap to req), ..vi (give-sigh %| a)))
     ++  eyre-them  |=({a/whir-se b/vase} (eyre-them:abet se+[a usr dom] b))
     ++  pass-note  |=({a/whir-se b/note} (pass-note:abet se+[a usr dom] b))
     ::  XX block reqs until correct core checked in?
@@ -1752,6 +1759,9 @@
       ^+  abet
       ?~  cor
         build
+      ?.  liv
+        ~&  e+vi+pump-blocked+[dom ~(wyt in req)]
+        abet
       =+  ole=~(top to req)
       ?~  ole  abet
       ::  process hiss
@@ -1773,6 +1783,7 @@
     ++  get-req   |=(a/{mark vase:hiss} pump(req (~(put to req) hen a)))
     ++  get-thou
       |=  {wir/whir-se hit/httr}
+      =.  liv  &
       ?+  wir  !!
         ?($receive-auth-query-string $in)  (call %receive-auth-response httr+!>(hit))
         ?($filter-request $out)
@@ -1782,16 +1793,16 @@
     ::
     ++  get-made
       |=  {wir/whir-se dep/@uvH res/(each cage tang)}  ^+  abet
-      ?:  ?=($core wir)  (update dep res)
+      ?:  ?=($core wir)  (made-core dep res)
       %.  res
       ?-  wir
-        ?($filter-request $out)             res-out
-        ?($filter-response $res)            res-res
-        ?($receive-auth-response $bak)      res-bak
-        ?($receive-auth-query-string $in)   res-in
+        ?($filter-request $out)             made-filter-request
+        ?($filter-response $res)            made-filter-response
+        ?($receive-auth-response $bak)      made-receive-auth-response
+        ?($receive-auth-query-string $in)   made-receive-auth-query-string
       ==
     ::
-    ++  update
+    ++  made-core
       |=  {dep/@uvH gag/(each cage tang)}
       :: ~&  got-update/dep
       =.  ..vi  (pass-note %core [%f [%wasp our dep &]])
@@ -1800,6 +1811,35 @@
         =.  cor  `~
         pump ::(cor `~)  :: userless %hiss defaults to "nop" driver
       (warn p.gag)
+    ::
+    ++  made-filter-request
+      %+  on-ford-fail  dead-hiss
+      %+  on-error  warn  |.
+      %-  handle-moves  :~
+        give+do-give
+        send+(do-send %filter-request)
+        show+do-show
+      ==
+    ::
+    ++  made-filter-response
+      %+  on-error  dead-hiss  |.
+      %-  handle-moves  :~
+        give+do-give
+        send+(do-send %filter-request)
+        redo+_pump
+      ==
+    ::
+    ++  made-receive-auth-query-string
+      %+  on-error  dead-this  |.
+      (handle-moves send+(do-send %receive-auth-query-string) ~)
+    ::
+    ++  made-receive-auth-response
+      %+  on-error  dead-this  |.
+      %-  handle-moves  :~
+        give+do-give
+        send+(do-send %receive-auth-query-string)
+        redo+_pump(..vi (give-html 200 ~ exit:xml))
+      ==
     ::
     ::  Result handling
     ::
@@ -1815,6 +1855,7 @@
     ++  do-send
       |=  wir/whir-se  ^-  $-(vase _abet)
       |=  res/vase
+      =.  liv  |  :: block requests until a reponse is given
       (eyre-them wir (slam !>(|=({$send a/hiss} a)) res))
     ::
     ++  handle-moves
@@ -1857,36 +1898,6 @@
       =+  typ=cor-type
       ~|  %core-mismatch
       ?>((~(nest ut typ) & p.roc) ~)
-    ::
-    ::
-    ++  res-in
-      %+  on-error  dead-this  |.
-      (handle-moves send+(do-send %receive-auth-query-string) ~)
-    ::
-    ++  res-res
-      %+  on-error  dead-hiss  |.
-      %-  handle-moves  :~
-        give+do-give
-        send+(do-send %filter-request)
-        redo+_pump
-      ==
-    ::
-    ++  res-bak
-      %+  on-error  dead-this  |.
-      %-  handle-moves  :~
-        give+do-give
-        send+(do-send %receive-auth-query-string)
-        redo+_pump(..vi (give-html 200 ~ exit:xml))
-      ==
-    ::
-    ++  res-out
-      %+  on-ford-fail  dead-hiss
-      %+  on-error  warn  |.
-      %-  handle-moves  :~
-        give+do-give
-        send+(do-send %filter-request)
-        show+do-show
-      ==
 --  --
 --
 .   ==
@@ -1935,10 +1946,13 @@
   ~
 ::
 ++  load                                                ::  take previous state
-  =+  bolo-4={$4 _%*(+ *bolo lyv *(map duct ^))}
-  |=  old/?(bolo bolo-4)
+  =+  driv-5=_=>(*driv [cor=p req=req.q])
+  =+  bolo-5={$5 _=+(*bolo +.-(sec (~(run by sec.-) driv-5)))}
+  =+  bolo-4={$4 _%*(+ *bolo-5 lyv *(map duct ^))}
+  |=  old/?(bolo bolo-5 bolo-4)
   ?-  -.old
-    $5  ..^$(+>- old)
+    $6  ..^$(+>- old)
+    $5  $(old [%6 +.old(sec (~(run by sec.old) |=(driv-5 [cor & req])))])
     $4  $(old [%5 +.old(lyv ~)])          :: minor leak
   ==
 ::
