@@ -1,3 +1,4 @@
+::  Create a galactic generator and ames-ready fingerprint
 ::
 ::::  /hoon/pope/gen
   ::
@@ -16,11 +17,7 @@
 %+  sole-lo  [%| %pope-pass "passphrase: "]
 %+  sole-go  (boss 256 (star prn))
 |=  fra/@t
-%+  sole-lo  [%| %pope-none "[press enter to compute]"]  :: XX oy
-%+  sole-go  (easy ~)
-|=  $~
 =+  bur=(shaz (add who (shaz fra)))
-~&  %computing-fingerprint
 =+  arc=(pit:nu:cryp 512 bur)
 %+  sole-so  %tang
 :~  leaf+"generator: {(scow %uw bur)}"
