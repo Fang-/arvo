@@ -1,4 +1,4 @@
-::  
+::
 ::::  /hoon/talk/sur
   !:
 |%
@@ -35,6 +35,29 @@
   ==                                                    ::
 ++  passport                                            ::  foreign flow
   $%  {$twitter p/@t}                                   ::  twitter
+  ==                                                    ::
+++  poll                                                ::  poll data
+  $:  question/@t                                       ::  poll question
+      answers/(list @t)                                 ::  poll choices
+      voters/(map ship (set @ud))                       ::  ships with votes
+      settings/policy                                   ::  poll settings
+  ==                                                    ::
+++  poll-action                                         ::  poll management
+  $%  {$make pol/poll aud/(unit station)}               ::  new poll, send to
+      {$edit pid/@ud nes/policy aud/(unit station)}     ::  edit poll, send to
+      {$show pid/@ud aud/station}                       ::  tmp
+      {$test $~}                                        ::  tmp
+  ==                                                    ::
+++  poll-interaction                                    ::  poll participation
+  $%  {$poll id/@ud aud/(set partner)}                  ::  display poll
+      ::TODO  We can deduce the voting ship, right?
+      {$vote id/@ud votes/(set @ud)}                    ::  cast vote(s)
+  ==                                                    ::
+++  policy                                              ::  poll options
+  $:  votes/@ud                                         ::  max votes pp
+      revote/?                                          ::  vote editing
+      close/(unit @da)                                  ::  closed after
+      clear/?                                           ::  results before close
   ==                                                    ::
 ++  posture                                             ::  security posture
   $?  $black                                            ::  channel
@@ -73,6 +96,13 @@
           body/@t                                       ::  body of event
           url/purf                                      ::  link to event
           meta/json                                     ::  other data for web
+      ==                                                ::
+      $:  $pol                                          ::  poll
+          id/@ud                                        ::  id on polling ship
+          question/@t                                   ::  poll question
+          answers/(list @t)                             ::  poll choices
+          votes/(list @ud)                              ::  vote counts
+          settings/policy                               ::  poll settings
       ==                                                ::
   ==                                                    ::
 ++  serial     @uvH                                     ::  unique identity

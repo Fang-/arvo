@@ -1,6 +1,6 @@
-::                                                      ::  ::  
+::                                                      ::  ::
 ::::  /hoon/talk/app                                    ::  ::
-  ::                                                    ::  ::   
+  ::                                                    ::  ::
 /?    310
 /-    talk, sole
 /+    talk, sole, time-to-id, twitter
@@ -35,6 +35,7 @@
           log/(map knot @ud)                            ::  logged to clay
           nik/(map (set partner) char)                  ::  bound station glyphs
           nak/(jug char (set partner))                  ::  station glyph lookup
+          polls/(list poll)                             ::  our polls
       ==                                                ::
     ++  story-3  (cork story |=(story +<(|10 &11.+<)))  ::  missing glyphers
     ++  story                                           ::  wire content
@@ -84,6 +85,7 @@
       $%  {$talk-command command}                       ::
           {$write-comment spur ship cord}               ::
           {$write-fora-post spur ship cord cord}        ::
+          {$poll-interaction poll-interaction}          ::
       ==                                                ::
     ++  card                                            ::  general card
       $%  {$diff lime}                                  ::
@@ -103,8 +105,8 @@
           {$who p/where}                                ::  presence
           {$what p/$@(char (set partner))}              ::  show bound glyph
           {$bind p/char q/(unit where)}                 ::
-          {$join p/where}                               ::  
-          {$leave p/where}                              ::  
+          {$join p/where}                               ::
+          {$leave p/where}                              ::
           {$say p/(list speech)}                        ::
           {$eval p/cord q/twig}                         ::
           {$invite p/knot q/(list partner)}             ::  whitelist add
@@ -118,8 +120,21 @@
           ::  {$destroy p/knot}                         ::
           {$create p/posture q/knot r/cord}             ::
           {$probe p/station}                            ::
+          $:  $poll                                     ::  request poll results
+              $=  q  $%                                 ::
+                {$poll p/(unit ship) q/@ud}             ::
+                {$gram p/$@(@ud {@u @ud})}              ::
+              ==                                        ::
+          ==                                            ::
+          $:  $vote                                     ::  cast votes
+              $=  q  $%                                 ::  poll or msg id
+                {$poll p/(unit ship) q/@ud}             ::
+                {$gram p/$@(@ud {@u @ud})}              ::
+              ==                                        ::
+              r/(list @ud)                              ::  votes
+          ==                                            ::
       ==                                                ::
-    ++  where  (set partner)                            ::  non-empty audience 
+    ++  where  (set partner)                            ::  non-empty audience
     ++  sigh                                            ::  assemble label
       |=  {len/@ud pre/tape yiz/cord}
       ^-  tape
@@ -127,11 +142,11 @@
       =+  lez=(lent nez)
       ?>  (gth len (lent pre))
       =.  len  (sub len (lent pre))
-      ?.  (gth lez len)  
+      ?.  (gth lez len)
         =.  nez  (welp pre nez)
         ?.  (lth lez len)  nez
         (runt [(sub len lez) '-'] nez)
-      :(welp pre (scag (dec len) nez) "+")  
+      :(welp pre (scag (dec len) nez) "+")
     ++  glyphs  `wall`~[">=+-" "}),." "\"'`^" "$%&@"]     :: station char pool
     ++  peer-type                                       ::  stream requests
       =<  apex
@@ -271,6 +286,20 @@
           (stag 0 dem:ag)
         ==
       ::
+      ++  poln                                          ::  poll reference
+        ;~  pose
+          %+  stag  %poll
+            ;~  plug
+              ;~  pose
+                (cook some ;~(sfix ship ace))
+                (easy ~)
+              ==
+              dem:ag
+            ==
+          (stag %gram ;~(pfix sem nump))
+          (stag %gram (cook lent (star sem)))
+        ==
+      ::
       ++  pore                                          ::  posture
         ;~  pose
           (cold %black (jest %channel))
@@ -335,6 +364,9 @@
               ==
             ==
           ==
+        ::
+          ;~((glue ace) (perk %poll ~) poln)
+          ;~((glue ace) (perk %vote ~) poln (most com dem:ag))
         ::
           ;~(plug (perk %set ~) ;~(pose ;~(pfix ace setting) (easy %$)))
           ;~(plug (perk %unset ~) ;~(pfix ace setting))
@@ -415,7 +447,7 @@
     ++  sh-pear                                         ::  hearback
       |=  paz/(set partner)
       ?~  paz  |
-      ?|  $(paz l.paz) 
+      ?|  $(paz l.paz)
           $(paz r.paz)
           (~(has in sources.shape:(~(got by stories) man.she)) `partner`n.paz)
       ==
@@ -469,7 +501,7 @@
         =+  unt=(~(get by two) p.i.eno)
         ?~  unt
           ret(old [i.eno old.ret])
-        ?:  =(q.i.eno u.unt)  ret 
+        ?:  =(q.i.eno u.unt)  ret
         ret(cha [[p.i.eno u.unt] cha.ret])
       =.  ret
         =+  owt=(~(tap by two))
@@ -479,7 +511,7 @@
         ?:  (~(has by one) p.i.owt)
           ret
         ret(new [i.owt new.ret])
-      ret 
+      ret
     ::
     ++  sh-repo-atlas-diff
       |=  {one/atlas two/atlas}
@@ -513,7 +545,7 @@
         ?:  =(%gone p:(~(got by one) p.i.owt))
           ret(new [i.owt new.ret])
         ret
-      ret 
+      ret
     ::
     ++  sh-repo-cabal-diff
       |=  {one/(map station config) two/(map station config)}
@@ -523,7 +555,7 @@
               cha/(list (pair station config))
           ==
       ^+  ret
-      =.  ret  
+      =.  ret
         =+  eno=(~(tap by one))
         |-  ^+  ret
         ?~  eno  ret
@@ -531,7 +563,7 @@
         =+  unt=(~(get by two) p.i.eno)
         ?~  unt
           ret(old [i.eno old.ret])
-        ?:  =(q.i.eno u.unt)  ret 
+        ?:  =(q.i.eno u.unt)  ret
         ret(cha [[p.i.eno u.unt] cha.ret])
       =.  ret
         =+  owt=(~(tap by two))
@@ -561,7 +593,7 @@
         =+  unt=(~(get by two) p.i.eno)
         ?~  unt
           ret(old [i.eno old.ret])
-        ?:  =(q.i.eno u.unt)  ret 
+        ?:  =(q.i.eno u.unt)  ret
         ret(cha [[p.i.eno u.unt] cha.ret])
       =.  ret
         =+  owt=(~(tap by two))
@@ -621,7 +653,7 @@
         ?:  (~(has in one) i.owt)
           ret
         ret(new [i.owt new.ret])
-      ret 
+      ret
     ::
     ++  sh-puss
       |=  a/posture  ^-  tape
@@ -675,11 +707,11 @@
           (sh-repo-whom-diff sources.laz sources.loc)
       ?:  !=(p.cordon.loc p.cordon.laz)
         =.  +>.$  (sh-note :(weld pre "but " (sh-puss p.cordon.loc)))
-        %^    sh-repo-config-exceptions  
-            (weld (trip man.she) ": ")  
+        %^    sh-repo-config-exceptions
+            (weld (trip man.she) ": ")
           p.cordon.loc
         [~ (~(tap in q.cordon.loc))]
-      %^    sh-repo-config-exceptions  
+      %^    sh-repo-config-exceptions
           (weld (trip man.she) ": ")
         p.cordon.loc
       (sh-repo-ship-diff q.cordon.laz q.cordon.loc)
@@ -695,14 +727,14 @@
           ?~  new  +>.^$
           =.  +>.^$  $(new t.new)
           =.  +>.^$  (sh-pest [%& p.i.new])
-          %+  sh-repo-config-show  
+          %+  sh-repo-config-show
             (weld ~(sn-phat sn man.she p.i.new) ": ")
           [*config q.i.new]
       =.  +>.$
           |-  ^+  +>.^$
           ?~  cha  +>.^$
           =.  +>.^$  $(cha t.cha)
-          %+  sh-repo-config-show  
+          %+  sh-repo-config-show
             (weld ~(sn-phat sn man.she p.i.cha) ": ")
           [(~(got by laz) `station`p.i.cha) q.i.cha]
       +>.$
@@ -720,7 +752,7 @@
     ++  sh-repo-house
       |=  awl/(map knot (pair posture cord))
       ^+  +>
-      =+  dif=(sh-repo-house-diff harbor.she awl) 
+      =+  dif=(sh-repo-house-diff harbor.she awl)
       =.  harbor.she  awl
       =.  +>.$
           |-  ^+  +>.^$
@@ -736,7 +768,7 @@
                   des=(trip q.q.i.new.dif)
               ==
           (sh-note "new {por} %{nam}: {des}")
-      =.  +>.$ 
+      =.  +>.$
           |-  ^+  +>.^$
           ?~  cha.dif  +>.^$
           =.  +>.^$  $(cha.dif t.cha.dif)
@@ -758,7 +790,7 @@
       ['%' (trip p.saz)]
     ::
     ++  sh-repo-group-diff-here                         ::  print atlas diff
-      |=  $:  pre/tape 
+      |=  $:  pre/tape
             $=  cul
             $:  old/(list (pair ship status))
                 new/(list (pair ship status))
@@ -778,10 +810,10 @@
           =.  +>.^$  $(new.cul t.new.cul)
           %-  sh-note
           (weld pre "met {(scow %p p.i.new.cul)} {(sh-spaz q.i.new.cul)}")
-      =.  +>.$ 
+      =.  +>.$
           |-  ^+  +>.^$
           ?~  cha.cul  +>.^$
-          %-  sh-note 
+          %-  sh-note
           (weld pre "set {(scow %p p.i.cha.cul)} {(sh-spaz q.i.cha.cul)}")
       +>.$
     ::
@@ -811,7 +843,7 @@
           =.  +>.^$
               (sh-note (weld "new " (~(ta-show ta man.she p.i.new.day) ~)))
           (sh-repo-group-diff-here "--" ~ (~(tap by q.i.new.day)) ~)
-      =.  +>.$ 
+      =.  +>.$
           |-  ^+  +>.^$
           ?~  cha.day  +>.^$
           =.  +>.^$  $(cha.day t.cha.day)
@@ -838,7 +870,7 @@
       ?:  (gth num count.she)
         =.  +>  (sh-numb num)
         (sh-rend(count.she +(num)) gam)
-      +> 
+      +>
     ::
     ++  sh-repo-grams                                   ::  apply telegrams
       |=  {num/@ud gaz/(list telegram)}
@@ -882,7 +914,7 @@
             ?:  =(pre (turf '•'))
               [[%del inx] ?~(buf ~ $(txt +.txt))]
             ?:  new
-              [(fix ' ') $(cur `@c`' ')] 
+              [(fix ' ') $(cur `@c`' ')]
             newline
           ?:  =(cur `@`' ')
             =.  brk  ?:(=(pre `@`' ') brk inx)
@@ -907,7 +939,7 @@
       ::
       ++  advance  ?~(buf ~ $(len +(len), inx +(inx), txt +.txt))
       ++  newline  ?~(buf ~ $(len 0, inx +(inx), txt +.txt))
-      ++  fix  |=(cha/@ [%mor [%del inx] [%ins inx `@c`cha] ~])  
+      ++  fix  |=(cha/@ [%mor [%del inx] [%ins inx `@c`cha] ~])
       --
     ::
     ++  sh-sane                                         ::  sanitize input
@@ -974,25 +1006,27 @@
       |%
       ++  work
         ?-  -.job
-          $number  (number +.job)
-          $leave   (leave +.job)
-          $join    (join +.job)
-          $eval    (eval +.job)
-          $who     (who +.job)
-          $what    (what +.job)
-          $bind    (bind +.job)
-          $invite  (invite +.job)
-          $banish  (banish +.job)
-          $author  (author +.job)
-          $block   (block +.job)
-          $create  (create +.job)
-          $nick    (nick +.job)
-          $set     (wo-set +.job)
-          $unset   (unset +.job)
-          $target  (target +.job)
-          $probe   (probe +.job)
-          $help    help
-          $say     (say +.job)
+          $number   (number +.job)
+          $leave    (leave +.job)
+          $join     (join +.job)
+          $eval     (eval +.job)
+          $who      (who +.job)
+          $what     (what +.job)
+          $bind     (bind +.job)
+          $invite   (invite +.job)
+          $banish   (banish +.job)
+          $author   (author +.job)
+          $block    (block +.job)
+          $create   (create +.job)
+          $nick     (nick +.job)
+          $set      (wo-set +.job)
+          $unset    (unset +.job)
+          $target   (target +.job)
+          $probe    (probe +.job)
+          $help     help
+          $say      (say +.job)
+          $poll     (poll +.job)
+          $vote     (vote +.job)
         ==
       ::
       ++  activate                                      ::  from %number
@@ -1002,7 +1036,7 @@
         =.  ..sh-work  (sh-fact tr-fact:tay)
         sh-prod(active.she `tr-pals:tay)
       ::
-      ++  help  
+      ++  help
         (sh-fact %txt "see http://urbit.org/docs/using/messaging/")
       ::
       ++  glyph
@@ -1024,7 +1058,7 @@
           ==
         %_    ..sh-work
             ..pa
-          %-  (ra-know man.she) 
+          %-  (ra-know man.she)
           |=(_pa pa-abet:(pa-report glyphers %glyph nak))
         ==
       ::
@@ -1057,8 +1091,8 @@
         =<  (sh-fact %mor (turn pan .))
         |=(a/(set partner) [%txt <a>]) ::  XX ~(te-whom te man.she a)
       ::
-      ++  who                                          ::  %who  
-        |=  pan/(set partner)  ^+  ..sh-work  
+      ++  who                                          ::  %who
+        |=  pan/(set partner)  ^+  ..sh-work
         =<  (sh-fact %mor (murn (sort (~(tap by q.owners.she) ~) aor) .))
         |=  {pon/partner alt/atlas}  ^-  (unit sole-effect)
         ?.  |(=(~ pan) (~(has in pan) pon))  ~
@@ -1070,7 +1104,7 @@
           $hear  `>a<
           $talk  `>a<      ::  XX difference
         ==
-      :: 
+      ::
       ++  bind                                          ::  %bind
         |=  {cha/char pan/(unit (set partner))}  ^+  ..sh-work
         ?~  pan  $(pan [~ u.active.she])
@@ -1101,7 +1135,7 @@
       ++  create                                        ::  %create
         |=  {por/posture nom/knot txt/cord}
         ^+  ..sh-work
-        ?:  (~(has in stories) nom) 
+        ?:  (~(has in stories) nom)
           (sh-lame "{(trip nom)}: already exists")
         =.  ..sh-work
             %^  sh-tell  %design  nom
@@ -1174,6 +1208,109 @@
         =.  ..sh-pact  (sh-pact pan)
         ?~(woe ..sh-work work(job u.woe))
       ::
+      ++  poll                                          ::  %poll
+        |=  $:  $=  id  $%
+                  {$poll p/(unit ship) q/@ud}
+                  {$gram p/$@(@ud {@u @ud})}
+                ==
+            ==
+        ^+  ..sh-work
+        ::TODO  Has duplicate code with ++vote
+        =>  |%
+            ++  poll-poke
+              |=  {p/@p id/@ud}
+              ^-  move
+              :*  ost.hid
+                  %poke
+                  /talk/poll/interaction
+                  [p %talk]
+                  %poll-interaction
+                  %poll
+                  id
+                  u.active.she
+              ==
+            --
+        ?-  -.id
+          $poll
+            ?~  p.id  ::TODO  or =our
+              ?:  (gte q.id (lent polls))
+                (sh-note "no such poll")
+              ~&  [%sending-poll q.id]
+              sh.ra-abet:(ra-poll:ra q.id u.active.she)  ::TODO audience
+            ~&  [%poking-poll u.p.id q.id]
+            sh.ra-abet:(ra-emit:ra (poll-poke u.p.id q.id))
+          $gram
+            ~&  [%gramnum p.id]
+            =+  gram=(numgram p.id)
+            ?~  gram
+              (sh-note "no such telegram")
+            =*  spec  r.r.q.u.gram
+            ?.  ?=({$pol *} spec)
+              (sh-note "telegram not a poll")
+            ~&  [%poking-poll p.u.gram id.spec]
+            sh.ra-abet:(ra-emit:ra (poll-poke p.u.gram id.spec))
+        ==
+      ::
+      ++  vote                                          ::  %vote
+        |=  $:  $=  id  $%
+                  {$poll p/(unit ship) q/@ud}
+                  {$gram p/$@(@ud {@u @ud})}
+                ==
+                vot/(list @ud)
+            ==
+        ~&  [%cmd-vote id vot]
+        ^+  ..sh-work
+        =>  |%
+            ++  vote-poke
+              |=  {p/@p id/@ud}
+              ^-  move
+              :*  ost.hid
+                  %poke
+                  /talk/poll/interaction
+                  [p %talk]
+                  %poll-interaction
+                  %vote
+                  id
+                  (silt vot)
+              ==
+            --
+        ?-  -.id
+          $poll
+            ?~  p.id
+              ?:  (gte q.id (lent polls))
+                (sh-note "no such poll")
+              ~&  [%casting-vote q.id]
+              sh.ra-abet:(ra-vote:ra q.id our.hid (silt vot))
+            ~&  [%poking-vote u.p.id q.id]
+            sh.ra-abet:(ra-emit:ra (vote-poke u.p.id q.id))
+          $gram
+            =+  gram=(numgram p.id)
+            ?~  gram
+              (sh-note "no such telegram")
+            =*  spec  r.r.q.u.gram
+            ?.  ?=({$pol *} spec)
+              (sh-note "telegram not a poll")
+            ~&  [%poking-vote p.u.gram id.spec]
+            sh.ra-abet:(ra-emit:ra (vote-poke p.u.gram id.spec))
+        ==
+      ::
+      ++  numgram                                       ::  telegram from number
+        |=  num/$@(@ud {p/@u q/@ud})
+        ^-  (unit telegram)
+        =+  roy=(~(got by stories) man.she)
+        |-
+        ::TODO  Doesn't get the correct gram for ;; etc?
+        ?@  num
+          ?:  (gte num count.roy)  ~
+          [~ (snag num grams.roy)]
+        ?.  (gth q.num count.roy)
+          ?~  count.roy
+            ~
+          =+  msg=(deli (dec count.roy) num)
+          [~ (snag (sub count.roy +(msg)) grams.roy)]
+        ~
+      ::
+      ::TODO  Rewrite to use numgram, only resolve error like below when no gram found?
       ++  number                                        ::  %number
         |=  num/$@(@ud {p/@u q/@ud})
         ^+  ..sh-work
@@ -1235,9 +1372,9 @@
       :*  %mor
           [%nex ~]
           [%det cal]
-          ?.  ?=({$';' *} buf)  ~ 
+          ?.  ?=({$';' *} buf)  ~
           :_  ~
-          [%txt (runt [14 '-'] `tape`['|' ' ' (tufa `(list @)`buf)])]  
+          [%txt (runt [14 '-'] `tape`['|' ' ' (tufa `(list @)`buf)])]
       ==
     ::
     ++  sh-sole                                         ::  apply edit
@@ -1256,18 +1393,18 @@
   ++  ra-abed                                           ::  resolve core
     ^+  [*(list move) +>]
     :_  +>
-    =+  ^=  yop  
+    =+  ^=  yop
         |-  ^-  (pair (list move) (list sole-effect))
         ?~  moves  [~ ~]
         =+  mor=$(moves t.moves)
-        ?:  ?&  =(ost.hid p.i.moves) 
+        ?:  ?&  =(ost.hid p.i.moves)
                 ?=({$diff $sole-effect *} q.i.moves)
             ==
           [p.mor [+>.q.i.moves q.mor]]
         [[i.moves p.mor] q.mor]
     =+  :*  moz=(flop p.yop)
             ^=  foc  ^-  (unit sole-effect)
-            ?~  q.yop  ~ 
+            ?~  q.yop  ~
             ?~(t.q.yop `i.q.yop `[%mor (flop `(list sole-effect)`q.yop)])
         ==
     ?~(foc moz [[ost.hid %diff %sole-effect u.foc] moz])
@@ -1305,11 +1442,11 @@
     ^+  +>
     =+  shu=(~(get by shells) ost.hid)
     ?~  shu
-      ~|  :+  %ra-console-broken  ost.hid 
+      ~|  :+  %ra-console-broken  ost.hid
           ?:((~(has by sup.hid) ost.hid) %lost %unknown)
       !!
     sh-abet:(~(sh-sole sh ~ u.shu) act)
-  ::  
+  ::
   ++  ra-emil                                           ::  ra-emit move list
     |=  mol/(list move)
     %_(+> moves (welp (flop mol) moves))
@@ -1329,7 +1466,7 @@
     :+  %diff  %talk-report
     :-  %house
     %-  ~(gas in *(map knot (pair posture cord)))
-    %+  turn  (~(tap by stories)) 
+    %+  turn  (~(tap by stories))
     |=({a/knot b/story} [a p.cordon.shape.b caption.shape.b])
   ::
   ++  ra-homes                                          ::  update partners
@@ -1396,9 +1533,9 @@
       :+  %design  man
       :-  ~  :-  ~
       :-  'towards a community'
-      [%brown ~] 
+      [%brown ~]
     %^  ra-consume  &  our.hid
-    :^    (shaf %init eny.hid)  
+    :^    (shaf %init eny.hid)
         (my [[%& our.hid (main our.hid)] *envelope %pending] ~)
       now.hid
     [~ %app %tree 'receiving forum posts, ;join %posts for details']
@@ -1436,9 +1573,9 @@
       :+  %design  man
       :-  ~  :-  ~
       :-  'letters to the editor'
-      [%brown ~] 
+      [%brown ~]
     %^  ra-consume  &  our.hid
-    :^    (shaf %init eny.hid)  
+    :^    (shaf %init eny.hid)
         (my [[%& our.hid (main our.hid)] *envelope %pending] ~)
       now.hid
     [~ %app %tree 'receiving comments, ;join %comments for details']
@@ -1458,6 +1595,56 @@
         [%app %tree (crip "comment on /{nam}")]
       ==
     ==
+  ::
+  ++  ra-poll
+    |=  {id/@ud aud/(set partner)}
+    ^+  +>
+    =+  pol=(snag id polls)
+    =+  votes=(~(tap by voters.pol))
+    =|  tally/(map @ud @ud)
+    =+  vi=0
+    |-
+    ?.  =(vi (lent answers.pol))
+      $(vi +(vi), tally (~(put by tally) vi 0))
+    |-
+    ?^  votes
+      %=  $
+        votes  t.votes
+        tally  tally  ::TODO  Tally votes
+      ==
+    %^  ra-consume  &  src.hid
+    ^-  thought
+    :*  (shaf %poll eny.hid)
+        %-  ~(gas by *audience)
+        %+  turn  (~(tap in aud))
+        |=(a/partner [a *envelope %pending])
+        now.hid
+        (sy /poll ~)
+        :*  %pol
+            id
+            question.pol
+            answers.pol
+            %+  turn  (~(tap by tally))
+            |=  v/(pair @ud @ud)  q.v
+            settings.pol
+        ==
+    ==
+  ::
+  ++  ra-vote
+    |=  {id/@ud vor/@p vos/(set @ud)}
+    ^+  +>
+    =+  pol=(snag id polls)
+    ?.  ?&  (lte (lent vos) votes.settings.pol)
+            |(?=($~ close.settings.pol) (gth u.close.settings.pol now.hid))
+            |(revote.settings.pol !(~(has by voters.pol) vor))
+        ==
+      ::TODO  Send "vote denied" poke to vor.
+      ~&  [%vote-denied]
+      +>.$
+    =.  voters.pol  (~(put by voters.pol) vor vos)
+    ::TODO  Send "vote accepted" poke to vor.
+    ~&  [%vote-accepted]
+    +>.$(polls :(weld (scag id polls) (limo [pol]~) (slag +(id) polls)))
   ::
   ++  ra-know                                           ::  story monad
     |=  man/knot
@@ -1488,7 +1675,7 @@
     |=  {{num/@ud her/@p man/knot} saw/(unit tang)}
     (ra-repeat num [%& her man] saw)
   ::
-  ++  ra-repeat                                         ::  remove from outbox 
+  ++  ra-repeat                                         ::  remove from outbox
     |=  {num/@ud pan/partner saw/(unit tang)}
     =+  oot=(~(get by q.outbox) num)
     ?~  oot  ~|([%ra-repeat-none num] !!)
@@ -1705,7 +1892,7 @@
       =.  mirrors  (~(put by mirrors) cuz con)
       ?:  =(mirrors old)
         +>.$
-      pa-report-cabal 
+      pa-report-cabal
     ::
     ++  pa-diff-talk-report                             ::  subscribed update
       |=  {cuz/station rad/report}
@@ -1769,7 +1956,7 @@
             :_  ~
             :*  %peer
                 /friend/show/[man]/(scot %p p.p.tay)/[q.p.tay]
-                [p.p.tay %talk] 
+                [p.p.tay %talk]
                 /[typ]/[q.p.tay]/[ini]
             ==
       ==
@@ -1897,12 +2084,12 @@
       ?.  (pa-admire p.gam)
         ~&  %pa-admire-rejected
         +>.$
-      =.  q.q.gam  
+      =.  q.q.gam
         =+  ole=(~(get by q.q.gam) [%& our.hid man])
         ?^  ole  (~(put by q.q.gam) [%& our.hid man] -.u.ole %received)
         ::  for fedearted stations, pretend station src/foo is also our/foo
         ::  XX pass src through explicitly instead of relying on implicit
-        ::     value in hid from the subscription to src/foo 
+        ::     value in hid from the subscription to src/foo
         =+  ole=(~(get by q.q.gam) [%& src.hid man])
         ?~  ole  q.q.gam
         =.  q.q.gam  (~(del by q.q.gam) [%& src.hid man])
@@ -1927,14 +2114,14 @@
       |=  {num/@ud gam/telegram}
       =+  way=(sub count num)
       ?:  =(gam (snag (dec way) grams))
-        +>.$                                            ::  no change    
+        +>.$                                            ::  no change
       =.  grams  (welp (scag (dec way) grams) [gam (slag way grams)])
       (pa-refresh num gam)
     --
   --
 ::
 ++  sn                                                  ::  station render core
-  |_  {man/knot one/station} 
+  |_  {man/knot one/station}
   ++  sn-best                                           ::  best to show
     |=  two/station
     ^-  ?
@@ -2001,7 +2188,7 @@
             (lth -.p.two -.p.one)
       ==
     ==
-  ++  ta-best                                           ::  most relevant 
+  ++  ta-best                                           ::  most relevant
     |=(two/partner ?:((ta-beat two) two one))
   ::
   ++  ta-full  (ta-show ~)                              ::  render full width
@@ -2102,7 +2289,7 @@
     =+  txt=(tr-text =(who our.hid))
     ?:  =(~ txt)  ""
     =+  ^=  baw
-        ::  ?:  oug 
+        ::  ?:  oug
         ::  ~(te-whom te man tr-pals)
         ?.  (~(has in sef) %noob)
           (~(sn-curt sn man [who (main who)]) |)
@@ -2145,6 +2332,72 @@
             leaf+(trip body.sep)
             leaf+(earf url.sep)
         ==
+      $pol
+        :-  %tan
+        =/  front/(list tank)
+          :~  leaf+""
+              leaf+(trip question.sep)                  ::  Question
+          ==
+        =/  answers/(list tank)
+            =|  ans/(list tank)                         ::  Answers
+            =+  ai=0
+            =+  tally=`@ud`(roll votes.sep add)  ::TODO  Voters, not votes.
+            |-
+            ?:  =(ai (lent answers.sep))  ans
+            =/  a/tank                                  ::  Answer
+              :-  %leaf
+              ;:  weld
+                " "  (scow %ud ai)  ") "
+                (trip (snag ai answers.sep))
+              ==
+            %=  $  ai  +(ai)  ans
+              %+  weld  ans
+              ?.  ?&  (gth tally 0)
+                      ?|  clear.settings.sep
+                          ?~  close.settings.sep  |
+                          (gth now.hid u.close.settings.sep)
+                      ==
+                  ==
+                (limo [a ~])
+              =/  v/tank                                  ::  & votes
+                =+  votes=(snag ai votes.sep)
+                :-  %leaf
+                ;:  weld
+                  "   "
+                  (scow %ud votes)
+                  " votes ("
+                  (scow %ud (div (mul votes 100) tally))
+                  "%)"
+                ==
+              (limo [a v ~])
+            ==
+      =/  vote/(list tank)
+        :~  leaf+""
+            :-  %leaf  ;:  weld                         ::  Instructions
+              "To vote, ;vote "
+              (scow %p who)
+              " "
+              (scow %ud id.sep)
+              " your,choice(s)"
+            ==
+            :-  %leaf  ;:  weld
+              "Max "
+              (scow %ud votes.settings.sep)
+              " vote"
+              ?:((gth votes.settings.sep 1) "s" "")
+              " allowed"
+            ==
+        ==
+      =/  edit/(list tank)
+        ?.  revote.settings.sep  ~
+        :_  ~
+        leaf+"Votes may be changed"
+      =/  close/(list tank)
+        ?~  close.settings.sep  ~
+        :_  ~
+        :-  %leaf                                       ::  Poll close date
+        (weld "Poll closes " (scow %da u.close.settings.sep))
+      (flop :(weld front answers vote edit close))
     ==
   ::
   ++  tr-rend-tors
@@ -2196,7 +2449,7 @@
         $exp  (tr-chow 66 '#' ' ' (trip p.sep))
         $url  =+  ful=(earf p.sep)
               ?:  (gth 64 (lent ful))  ['/' ' ' ful]
-              :+  '/'  '_' 
+              :+  '/'  '_'
               =+  hok=r.p.p.p.sep
               ~!  hok
               =-  (swag [a=(sub (max 64 (lent -)) 64) b=64] -)
@@ -2218,11 +2471,15 @@
     ::
         $api
       (tr-chow 64 "[{(trip id.sep)}@{(trip service.sep)}]: {(trip summary.sep)}")
+    ::
+        $pol
+      (tr-chow 64 '_' ' ' (trip question.sep))
     ==
-  -- 
+  --
 ::
 ++  peer                                                ::  accept subscription
   |=  pax/path
+  ~&  [%peer pax]
   ^+  [*(list move) +>]
   ~?  !=(src.hid our.hid)  [%peer-talk-stranger src.hid]
   :: ~&   [%talk-peer src.hid ost.hid pax]
@@ -2241,6 +2498,42 @@
       ra-abet:(ra-apply:ra src.hid cod)
   =^  mow  +>.$  log-all-to-file
   [(welp mos mow) +>.$]
+::
+++  poke-talk-poll-action
+  |=  pac/poll-action
+  ^-  (quip move +>)
+  ~&  [%gonna-do pac src.hid]
+  ?-  -.pac
+    $make
+      =.  polls  (weld polls (limo [pol.pac ~]))
+      ?~  aud.pac  [~ +>.$(polls polls)]
+      =<  ra-abet
+      %+  ra-poll:ra(polls polls)
+      (sub (lent polls) 1)
+      (sy [%& u.aud.pac]~)
+    $edit
+      ?:  (gte pid.pac (lent polls))
+        ~&  'no such poll id'
+        [~ +>.$]
+      =+  pol=(snag pid.pac polls)
+      =:  revote.settings.pol  revote.nes.pac
+          close.settings.pol   close.nes.pac
+          clear.settings.pol   clear.nes.pac
+      ==
+      =.  polls  ;:  weld
+            (scag pid.pac polls)
+            (limo [pol ~])
+            (slag +(pid.pac) polls)
+          ==
+      ?~  aud.pac  [~ +>.$(polls polls)]
+      ra-abet:(ra-poll:ra(polls polls) pid.pac (sy [%& u.aud.pac]~))
+    $show
+      ra-abet:(ra-poll:ra pid.pac (sy [%& aud.pac]~))
+    $test
+      ~&  %have-polls
+      ~&  polls
+      [~ +>.$] ::(polls (limo ~))]
+  ==
 ::
 ++  poke-sole-action                                    ::  accept console
   |=  act/sole-action
@@ -2264,7 +2557,7 @@
   |=  way/wire
   ^-  weir
   ?+    -.way  !!
-      $friend 
+      $friend
     ?>  ?=({$show @ @ @ $~} t.way)
     [%friend i.t.t.way (slav %p i.t.t.t.way) i.t.t.t.t.way]
   ::
@@ -2336,6 +2629,16 @@
   |=  {pax/path sup/spur hed/@t txt/@t}  ^-  (quip move +>)
   ra-abet:(ra-fora-post:ra pax sup hed txt)
 ::
+++  poke-poll-interaction
+  |=  pi/poll-interaction
+  ?-  -.pi
+    $poll
+      ra-abet:(ra-poll:ra id.pi aud.pi)
+    $vote
+      ::TODO  Figure out if src.hid is updated to be the source of the poke or not.
+      ra-abet:(ra-vote:ra id.pi src.hid votes.pi)
+  ==
+::
 ++  poke-talk-save
   |=  man/knot
   ^-  (quip move +>)
@@ -2366,7 +2669,7 @@
   :-  ~
   +>.$(log (~(del by log) man))
 ::
-++  prep
+++  prep  ::  |=(* [~ ..prep])
   |=  old/(unit house-any)
   ^-  (quip move ..prep)
   ?~  old
