@@ -1602,15 +1602,27 @@
     =+  pol=(snag id polls)
     =+  votes=(~(tap by voters.pol))
     =|  tally/(map @ud @ud)
+    =/  showtal/?
+      ?&  (gth (lent votes) 0)
+          ?|  clear.settings.pol
+              ?~  close.settings.pol  |
+              (gth now.hid u.close.settings.pol)
+          ==
+      ==
     =+  vi=0
     |-
     ?.  =(vi (lent answers.pol))
       $(vi +(vi), tally (~(put by tally) vi 0))
+    =|  pt/_tally
     |-
     ?^  votes
       %=  $
-        votes  t.votes
-        tally  tally  ::TODO  Tally votes
+        votes  ?:  showtal  t.votes  ~
+        tally  %-  ~(rep in q.i.votes)
+               =<  .(tal tally)
+               |=  {v/@ud tal/_tally}
+               =+  c=(fall (~(get by tal) v) 0)
+               (~(put by tal) v +(c))
       ==
     %^  ra-consume  &  src.hid
     ^-  thought
@@ -1624,9 +1636,10 @@
             id
             question.pol
             answers.pol
+            :_  settings.pol
+            ?.  showtal  ~
             %+  turn  (~(tap by tally))
             |=  v/(pair @ud @ud)  q.v
-            settings.pol
         ==
     ==
   ::
