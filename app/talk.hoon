@@ -1633,18 +1633,32 @@
   ++  ra-vote
     |=  {id/@ud vor/@p vos/(set @ud)}
     ^+  +>
+    =>  |%
+      ++  resp-poke
+        |=  r/?
+        ^-  move
+        :*  ost.hid
+            %poke
+            /talk/poll/interaction
+            [vor %talk]
+            %poll-interaction
+            %resp
+            ?:  r  %accepted  %denied
+        ==
+      --
+    ?:  (gte id (lent polls))
+      (ra-emit (resp-poke |))
     =+  pol=(snag id polls)
     ?.  ?&  (lte (lent vos) votes.settings.pol)
             |(?=($~ close.settings.pol) (gth u.close.settings.pol now.hid))
             |(revote.settings.pol !(~(has by voters.pol) vor))
         ==
-      ::TODO  Send "vote denied" poke to vor.
-      ~&  [%vote-denied]
-      +>.$
+      (ra-emit (resp-poke |))
     =.  voters.pol  (~(put by voters.pol) vor vos)
-    ::TODO  Send "vote accepted" poke to vor.
-    ~&  [%vote-accepted]
-    +>.$(polls :(weld (scag id polls) (limo [pol]~) (slag +(id) polls)))
+    %.  (resp-poke &)
+    %=  ra-emit
+      polls  :(weld (scag id polls) (limo [pol]~) (slag +(id) polls))
+    ==
   ::
   ++  ra-know                                           ::  story monad
     |=  man/knot
@@ -2637,6 +2651,11 @@
     $vote
       ::TODO  Figure out if src.hid is updated to be the source of the poke or not.
       ra-abet:(ra-vote:ra id.pi src.hid votes.pi)
+    $resp
+      ?-  r.pi
+        $accepted  sh-abet:(sh-note:sh:ra "vote accepted")
+        $denied    sh-abet:(sh-note:sh:ra "vote denied")
+      ==
   ==
 ::
 ++  poke-talk-save

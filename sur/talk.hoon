@@ -52,6 +52,7 @@
   $%  {$poll id/@ud aud/(set partner)}                  ::  display poll
       ::TODO  We can deduce the voting ship, right?
       {$vote id/@ud votes/(set @ud)}                    ::  cast vote(s)
+      {$resp r/?($accepted $denied)}                    ::  vote result
   ==                                                    ::
 ++  policy                                              ::  poll options
   $:  votes/@ud                                         ::  max votes pp
