@@ -297,7 +297,7 @@
               dem:ag
             ==
           (stag %gram ;~(pfix sem nump))
-          (stag %gram (cook lent (star sem)))
+          (stag %gram ;~(pfix sem (cook lent (star sem))))
         ==
       ::
       ++  pore                                          ::  posture
@@ -1299,7 +1299,6 @@
         ^-  (unit telegram)
         =+  roy=(~(got by stories) man.she)
         |-
-        ::TODO  Doesn't get the correct gram for ;; etc?
         ?@  num
           ?:  (gte num count.roy)  ~
           [~ (snag num grams.roy)]
