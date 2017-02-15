@@ -103,6 +103,7 @@
           question/@t                                   ::  poll question
           answers/(list @t)                             ::  poll choices
           votes/(list @ud)                              ::  vote counts
+          voters/@ud                                    ::  voters count
           settings/policy                               ::  poll settings
       ==                                                ::
   ==                                                    ::

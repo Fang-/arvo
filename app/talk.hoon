@@ -1612,7 +1612,6 @@
     |-
     ?.  =(vi (lent answers.pol))
       $(vi +(vi), tally (~(put by tally) vi 0))
-    =|  pt/_tally
     |-
     ?^  votes
       %=  $
@@ -1635,10 +1634,11 @@
             id
             question.pol
             answers.pol
-            :_  settings.pol
             ?.  showtal  ~
             %+  turn  (~(tap by tally))
             |=  v/(pair @ud @ud)  q.v
+            ~(wyt by voters.pol)
+            settings.pol
         ==
     ==
   ::
@@ -1661,7 +1661,7 @@
     ?:  (gte id (lent polls))
       (ra-emit (resp-poke |))
     =+  pol=(snag id polls)
-    ?.  ?&  (lte (lent vos) votes.settings.pol)
+    ?.  ?&  (lte ~(wyt in vos) votes.settings.pol)
             |(?=($~ close.settings.pol) (gth u.close.settings.pol now.hid))
             |(revote.settings.pol !(~(has by voters.pol) vor))
         ==
@@ -2367,7 +2367,6 @@
         =/  answers/(list tank)
             =|  ans/(list tank)                         ::  Answers
             =+  ai=0
-            =+  tally=`@ud`(roll votes.sep add)  ::TODO  Voters, not votes.
             |-
             ?:  =(ai (lent answers.sep))  ans
             =/  a/tank                                  ::  Answer
@@ -2378,7 +2377,7 @@
               ==
             %=  $  ai  +(ai)  ans
               %+  weld  ans
-              ?.  ?&  (gth tally 0)
+              ?.  ?&  (gth voters.sep 0)
                       ?|  clear.settings.sep
                           ?~  close.settings.sep  |
                           (gth now.hid u.close.settings.sep)
@@ -2392,7 +2391,7 @@
                   "   "
                   (scow %ud votes)
                   " votes ("
-                  (scow %ud (div (mul votes 100) tally))
+                  (scow %ud (div (mul votes 100) voters.sep))
                   "%)"
                 ==
               (limo [a v ~])
