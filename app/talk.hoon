@@ -1236,9 +1236,9 @@
               ?:  (gte q.id (lent polls))
                 (sh-note "no such poll")
               ~&  [%sending-poll q.id]
-              sh.ra-abet:(ra-poll:ra q.id u.active.she)  ::TODO audience
+              ..sh-work(+> (ra-poll q.id u.active.she))
             ~&  [%poking-poll u.p.id q.id]
-            sh.ra-abet:(ra-emit:ra (poll-poke u.p.id q.id))
+            ..sh-work(+> (ra-emit (poll-poke u.p.id q.id)))
           $gram
             ~&  [%gramnum p.id]
             =+  gram=(numgram p.id)
@@ -1248,7 +1248,7 @@
             ?.  ?=({$pol *} spec)
               (sh-note "telegram not a poll")
             ~&  [%poking-poll p.u.gram id.spec]
-            sh.ra-abet:(ra-emit:ra (poll-poke p.u.gram id.spec))
+            ..sh-work(+> (ra-emit (poll-poke p.u.gram id.spec)))
         ==
       ::
       ++  vote                                          ::  %vote
@@ -1280,9 +1280,9 @@
               ?:  (gte q.id (lent polls))
                 (sh-note "no such poll")
               ~&  [%casting-vote q.id]
-              sh.ra-abet:(ra-vote:ra q.id our.hid (silt vot))
+              ..sh-work(+> (ra-vote q.id our.hid (silt vot)))
             ~&  [%poking-vote u.p.id q.id]
-            sh.ra-abet:(ra-emit:ra (vote-poke u.p.id q.id))
+            ..sh-work(+> (ra-emit (vote-poke u.p.id q.id)))
           $gram
             =+  gram=(numgram p.id)
             ?~  gram
@@ -1291,7 +1291,7 @@
             ?.  ?=({$pol *} spec)
               (sh-note "telegram not a poll")
             ~&  [%poking-vote p.u.gram id.spec]
-            sh.ra-abet:(ra-emit:ra (vote-poke p.u.gram id.spec))
+            ..sh-work(+> (ra-emit (vote-poke p.u.gram id.spec)))
         ==
       ::
       ++  numgram                                       ::  telegram from number
