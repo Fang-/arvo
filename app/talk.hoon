@@ -2360,10 +2360,9 @@
         ==
       $pol
         :-  %tan
-        =/  front/(list tank)
-          :~  leaf+""
-              leaf+(trip question.sep)                  ::  Question
-          ==
+        =/  nl/(list tank)  [leaf+"" ~]
+        =/  question/(list tank)
+          [leaf+(trip question.sep) ~]                  ::  Question
         =/  answers/(list tank)
             =|  ans/(list tank)                         ::  Answers
             =+  ai=0
@@ -2385,6 +2384,7 @@
                   ==
                 (limo [a ~])
               =/  v/tank                                  ::  & votes
+                ?:  (gte ai (lent votes.sep))  leaf+"No votes."
                 =+  votes=(snag ai votes.sep)
                 :-  %leaf
                 ;:  weld
@@ -2397,8 +2397,9 @@
               (limo [a v ~])
             ==
       =/  vote/(list tank)
-        :~  leaf+""
-            :-  %leaf  ;:  weld                         ::  Instructions
+        ?:  (gte now.hid (fall close.settings.sep now.hid))
+          ~
+        :~  :-  %leaf  ;:  weld                         ::  Instructions
               "To vote, ;vote "
               (scow %p who)
               " "
@@ -2410,19 +2411,37 @@
               (scow %ud votes.settings.sep)
               " vote"
               ?:((gth votes.settings.sep 1) "s" "")
-              " allowed"
+              " allowed."
             ==
         ==
       =/  edit/(list tank)
         ?.  revote.settings.sep  ~
         :_  ~
-        leaf+"Votes may be changed"
+        leaf+"Votes may be changed."
       =/  close/(list tank)
         ?~  close.settings.sep  ~
         :_  ~
         :-  %leaf                                       ::  Poll close date
-        (weld "Poll closes " (scow %da u.close.settings.sep))
-      (flop :(weld front answers vote edit close))
+        ?:  (gth now.hid u.close.settings.sep)
+          "Poll has closed."
+        %+  weld
+        "Poll closes "
+        =+  dt=(scow %da u.close.settings.sep)
+        (scag (sub (lent dt) 6) dt)
+      =/  clear/(list tank)
+        ?:  clear.settings.sep  ~
+        :_  ~
+        leaf+"Results will be visible after the poll has closed."
+      %-  flop  ;:  weld
+        nl
+        question
+        answers
+        nl
+        vote
+        edit
+        close
+        clear
+      ==
     ==
   ::
   ++  tr-rend-tors
