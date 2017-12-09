@@ -2,8 +2,10 @@
 ::
 ::::  /hoon/feed/twit/mar
   ::
-/-  talk
-/+  twitter, httr-to-json
+/-  hall
+/+  twitter, httr-to-json, old-zuse
+=,  old-zuse
+=,  format
 |_  fed/(list post:twitter)
 ++  grab
   |%
@@ -14,10 +16,10 @@
 ++  grow
   |%
   ++  tank  >[fed]<
-  ++  talk-speeches
+  ++  hall-speeches
     =+  r=render:twitter
     %+  turn  fed
-    |=  a/post:twitter  ^-  speech:talk
+    |=  a/post:twitter  ^-  speech:hall
     :*  %api  %twitter
         who.a
         (user-url.r who.a)

@@ -1,8 +1,8 @@
-!:
+::
 ::  dill (4d), terminal handling
 ::
 |=  pit/vase
-=,  ^dill
+=,  dill
 =>  |%                                                  ::  interface tiles
 ++  gill  (pair ship term)                              ::  general contact
 --                                                      ::
@@ -43,11 +43,11 @@
 ++  move  {p/duct q/(wind note gift:able)}              ::  local move
 ++  note-ames                                           ::  weird ames move
   $%  {$make p/(unit @t) q/@ud r/@ s/?}                 ::
-      {$sith p/@p q/@uw r/?}                            ::
+      {$sith p/@p q/@uw r/?}                          ::
   ==                                                    ::
 ++  note-clay                                           ::
-  $%  {$merg p/@p q/@tas r/@p s/@tas t/case u/germ:^clay}::  merge desks
-      {$warp p/sock q/riff:^clay}                       ::  wait for clay hack
+  $%  {$merg p/@p q/@tas r/@p s/@tas t/case u/germ:clay}::  merge desks
+      {$warp p/sock q/riff:clay}                       ::  wait for clay hack
   ==                                                    ::
 ++  note-dill                                           ::  note to self, odd
   $%  {$crud p/@tas q/(list tank)}                      ::
@@ -55,13 +55,13 @@
       {$init p/ship}                                    ::
       {$text p/tape}                                    ::
       {$veer p/@ta q/path r/@t}                         ::  install vane
-      {$vega p/path}                                    ::  reboot by path
+      {$vega p/path q/path}                             ::  reboot by path
       {$velo p/@t q/@t}                                 ::  reboot by path
       {$verb $~}                                        ::  verbose mode
   ==                                                    ::
 ++  note-gall                                           ::
   $%  {$conf dock $load ship desk}                      ::
-      {$deal p/sock q/cush:^gall}                       ::
+      {$deal p/sock q/cush:gall}                       ::
   ==                                                    ::
 ++  note                                                ::  out request $->
   $?  {?($a $b $c $e $f $g) $wegh $~}                   ::
@@ -72,19 +72,20 @@
   ==  ==                                                ::
 ++  sign-ames                                           ::
   $%  {$nice $~}                                        ::
+      {$send p/lane:ames q/@}                           ::
       {$init p/ship}                                    ::
   ==                                                    ::
 ++  sign-clay                                           ::
   $%  {$mere p/(each (set path) (pair term tang))}      ::
       {$note p/@tD q/tank}                              ::
-      {$writ p/riot:^clay}                              ::
+      {$writ p/riot:clay}                               ::
   ==                                                    ::
 ++  sign-dill                                           ::
   $%  {$blit p/(list blit)}                             ::
   ==                                                    ::
 ++  sign-gall                                           ::
-  $%  {$onto p/(each suss:^gall tang)}                  ::
-      {$unto p/cuft:^gall}                              ::
+  $%  {$onto p/(each suss:gall tang)}                   ::
+      {$unto p/cuft:gall}                               ::
   ==                                                    ::
 ++  sign                                                ::  in result $<-
   $?  {?($a $b $c $e $f $g) $mass p/mass}               ::
@@ -119,7 +120,7 @@
                  (crud p.kyz q.kyz)
           $blew  (send %rez p.p.kyz q.p.kyz)
           $heft  heft
-          $tick  =+  ^=  ges  ^-  gens:^ames
+          $tick  =+  ^=  ges  ^-  gens:ames
                      :-  %en
                      =+  can=(clan:title p.kyz)
                      ?-  can
@@ -130,7 +131,7 @@
                        $pawn  [%pawn ~]
                      ==
                  =+  yen=(scot %p (shax :(mix %ticket eny now)))
-                 =+  ^=  beg  ^-  {his/@p tic/@p yen/@t ges/gens:^ames}
+                 =+  ^=  beg  ^-  {his/@p tic/@p yen/@t ges/gens:ames}
                      [p.kyz q.kyz yen ges]
                  =+  cmd=[%hood %poke `cage`[%helm-begin !>(beg)]]
                  %=    +>.$
@@ -203,7 +204,7 @@
           ^-  (list @c)
           ;:  weld
               ?:  =(0 ~(wyt in p.p.a))  ~
-              `(list @c)`(zing (turn (~(tap in p.p.a)) ef))
+              `(list @c)`(zing (turn ~(tap in p.p.a) ef))
               (bg p.q.p.a)
               (fg q.q.p.a)
               q.a
@@ -364,6 +365,9 @@
             {$a $init *}
           +>(moz :_(moz [hen %give +.sih]))
         ::
+            {$a $send *}
+          +>(moz :_(moz [hen %give +.sih]))
+        ::
             {$c $mere *}
           ?:  ?=($& -.p.sih)
             +>.$
@@ -385,7 +389,6 @@
                      +>.$
                    (dump:(crud %reap u.p.p.+>.sih) %logo ~)
             $diff  pump:(from ((hard dill-blit) q:`vase`+>+>.sih))
-            $doff  !!
           ==
         ::
             {$c $note *}
@@ -477,7 +480,7 @@
     :_(..^$ ?~(hey.all ~ [u.hey.all %slip %d p.q.hic]~))
   =.  hey.all  ?^(hey.all hey.all `hen)
   ?:  ?=($init -.q.hic)
-    ::  ~&  [%call-init hen]
+    ::  ~&  [%cnhp-init hen]
     ?:  =(ore.all `p.q.hic)
       [[hen %give q.hic]~ ..^$]
     =:  ore.all  `p.q.hic

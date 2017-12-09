@@ -12,21 +12,20 @@
   ::
 ::~&  [sum=sum kid=kid]
 ::  Link from relative path
-=,  ^eyre
-=,  url:eyre
-=,  xml:eyre
+=,  eyre
+=,  html
 =+  hok=.^(hart %e /(scot %p our)/host/real)
-=+  ref=|=(a/path (earn hok `(weld tub a) ~))
+=+  ref=|=(a/path (en-purl hok `(weld tub a) ~))
 ::  urb:front attrs confuse RSS validators, readers
 =+  no-meta=|=(a/marl ^+(a ?~(a ~ ?.(?=($meta n.g.i.a) a $(a t.a)))))
 ::
-%-  crip  %-  print
+%-  crip  %-  en-xml
 ;rss(version "2.0")
   ;channel
     ;title: *{hed.sum}
     ;link: {(ref /)}
     ;description: *{(no-meta tal.sum)}
-    ;*  %+  turn  (~(tap by kid))
+    ;*  %+  turn  ~(tap by kid)
         |=  {nom/@t hed/marl tal/marl}
         ;item
           ;title: *{hed}

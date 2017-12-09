@@ -4,6 +4,8 @@
   ::
 /?  314
 /-  sole
+/+  old-zuse
+=,  old-zuse
 ::
 ::::
   ::
@@ -13,22 +15,22 @@
         {arg/$@($~ {dom/path $~})}
         $~
     ==
-^-  (sole-result {$write-sec-atom p/host q/@})
+^-  (sole-result {$write-sec-atom p/host:eyre q/@})
 =-  ?~  arg  -
     (fun.q.q [%& dom.arg])
 %+  sole-lo
   [%& %oauth-hostname "api hostname: https://"]
-%+  sole-go  thos:urlp
-|=  hot/host
+%+  sole-go  thos:de-purl:html
+|=  hot/host:eyre
 ?:  ?=($| -.hot)
   ~|(%ips-unsupported !!)
 %+  sole-lo
   [%& %oauth-client "client id: "]
 %+  sole-go  (boss 256 (star prn))
 |=  cid/@t
-%+  sole-lo
+%+  sole-lo  
   [%& %oauth-secret "client secret: "]
 %+  sole-go  (boss 256 (star prn))
 |=  cis/@t
 %+  sole-so  %write-sec-atom    :: XX typed pair
-[hot (role cid cis ~)]
+[hot (of-wain:format cid cis ~)]

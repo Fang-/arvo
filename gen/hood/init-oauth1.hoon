@@ -4,6 +4,8 @@
   ::
 /?  314
 /-  sole
+/+  old-zuse
+=,  old-zuse
 ::
 ::::
   ::
@@ -26,9 +28,9 @@
   [%& %oauth-client "consumer key: "]
 %+  sole-go  (boss 256 (star prn))
 |=  key/@t
-%+  sole-lo
+%+  sole-lo  
   [%& %oauth-secret "consumer secret: "]
 %+  sole-go  (boss 256 (star prn))
 |=  sec/@t
 %+  sole-so  %write-sec-atom    :: XX typed pair
-[hot (role key sec ~)]
+[hot (of-wain:format key sec ~)]
